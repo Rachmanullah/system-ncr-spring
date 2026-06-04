@@ -124,7 +124,12 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+<!--                <configuration>-->
+<!--                    <source>21</source>-->
+<!--                    <target>21</target>-->
+<!--                    <compilerArgs>&#45;&#45;enable-preview</compilerArgs>-->
+<!--                </configuration>-->
+            </plugin>
 		</plugins>
 	</build>
 	<repositories>

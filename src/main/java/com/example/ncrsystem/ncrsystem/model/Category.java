@@ -39,7 +39,7 @@ public class Category {
     @UpdateTimestamp
     @Column(name="LAST_MODIFIED", nullable = true)
     private Date latModified;
-    @Column(name="LAST_MODIFED_BY_LOGIN_HISTORY", nullable = true)
+    @Column(name="LAST_MODIFIED_BY_LOGIN_HISTORY", nullable = true)
     private BigInteger lastModifiedByLoginHistory;
     @PrePersist
     @PreUpdate

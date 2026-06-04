@@ -7,6 +7,7 @@ import com.example.ncrsystem.ncrsystem.dto.category.CategoryResponse;
 import com.example.ncrsystem.ncrsystem.model.Category;
 import com.example.ncrsystem.ncrsystem.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -30,6 +31,7 @@ public class CategoryLmpl implements CategoryService{
     }
 
     @Override
+    @Transactional
     public CategoryResponse create(CategoryRequest request) {
         Category category = categoryMapper.toEntity(request);
         category = categoryRepository.save(category);
@@ -37,6 +39,7 @@ public class CategoryLmpl implements CategoryService{
     }
 
     @Override
+    @Transactional
     public CategoryResponse update(BigInteger categoryId, CategoryRequest request) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
         category.setCategoryName(request.getCategoryName());
@@ -45,6 +48,7 @@ public class CategoryLmpl implements CategoryService{
     }
 
     @Override
+    @Transactional
     public CategoryResponse delete(BigInteger categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
         category.setDeleted(StatusConstant.DELETED);

@@ -7,6 +7,7 @@ import com.example.ncrsystem.ncrsystem.dto.role.RoleResponse;
 import com.example.ncrsystem.ncrsystem.model.Role;
 import com.example.ncrsystem.ncrsystem.repository.RoleRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -28,6 +29,7 @@ public class RoleLmpl implements RoleService{
                 .toList();
     }
     @Override
+    @Transactional
     public RoleResponse create(RoleRequest request) {
         Role role = mapper.toEntity(request);
         role = repository.save(role);
@@ -35,6 +37,7 @@ public class RoleLmpl implements RoleService{
     }
 
     @Override
+    @Transactional
     public RoleResponse update(BigInteger roleId, RoleRequest request) {
         Role role = repository.findById(roleId).orElseThrow(() -> new RuntimeException("Role not found"));
         role.setRoleName(request.getRoleName());
@@ -44,6 +47,7 @@ public class RoleLmpl implements RoleService{
     }
 
     @Override
+    @Transactional
     public RoleResponse delete(BigInteger roleId) {
         Role role = repository.findById(roleId).orElseThrow(() -> new RuntimeException("Role not found"));
         role.setDeleted(StatusConstant.DELETED);

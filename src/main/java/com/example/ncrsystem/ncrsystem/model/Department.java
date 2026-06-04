@@ -30,6 +30,8 @@ public class Department {
     )
     @Column(name = "DEPARTMENT_ID")
     private BigInteger departmentId;
+    @Column(name = "DEPARTMENT_CODE", length=10)
+    private String departmentCode;
     @NotBlank
     @Column(name = "DEPARTMENT_NAME", length = 100, nullable = false)
     private String departmentName;
@@ -45,10 +47,14 @@ public class Department {
     @UpdateTimestamp
     @Column(name="LAST_MODIFIED", nullable = true)
     private LocalDateTime latModified;
-    @Column(name="LAST_MODIFED_BY_LOGIN_HISTORY", nullable = true)
+    @Column(name="LAST_MODIFIED_BY_LOGIN_HISTORY", nullable = true)
     private BigInteger lastModifiedByLoginHistory;
     @OneToMany(mappedBy = "department")
     private List<User> users;
+    @OneToMany(mappedBy = "department")
+    private List<NCRRequest> ncrRequests;
+    @PrePersist
+    @PreUpdate
     public void prePersist() {
         if (status == null) {
             status = BigInteger.ZERO;

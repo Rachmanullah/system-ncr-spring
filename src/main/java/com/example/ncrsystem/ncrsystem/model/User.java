@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigInteger;
 import java.sql.Date;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -41,6 +42,11 @@ public class User {
     @Column(name="EMAIL", length = 100, nullable = true)
     private String email;
     @Column(name="STATUS", nullable = true)
+    @OneToMany(mappedBy = "requestor")
+    private List<NCRRequest> requestedNcrs;
+
+    @OneToMany(mappedBy = "implementationBy")
+    private List<NCRRequest> implementedNcrs;
     private BigInteger status;
     @Column(name="DELETED", nullable = true)
     private BigInteger deleted;
@@ -52,7 +58,7 @@ public class User {
     @UpdateTimestamp
     @Column(name="LAST_MODIFIED", nullable = true)
     private Date latModified;
-    @Column(name="LAST_MODIFED_BY_LOGIN_HISTORY", nullable = true)
+    @Column(name="LAST_MODIFIED_BY_LOGIN_HISTORY", nullable = true)
     private BigInteger lastModifiedByLoginHistory;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DEPARTMENT_ID")

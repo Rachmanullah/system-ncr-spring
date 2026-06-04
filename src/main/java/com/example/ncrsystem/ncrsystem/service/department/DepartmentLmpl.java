@@ -7,6 +7,7 @@ import com.example.ncrsystem.ncrsystem.dto.department.DepartmentResponse;
 import com.example.ncrsystem.ncrsystem.model.Department;
 import com.example.ncrsystem.ncrsystem.repository.DepartmentRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -23,12 +24,13 @@ public class DepartmentLmpl implements DepartmentService{
 
     @Override
     public List<DepartmentResponse> findAll() {
-        return repository.findAll()
+        return repository.findAllDepartment()
                 .stream()
                 .map(mapper::toResponse)
                 .toList();
     }
     @Override
+    @Transactional
     public DepartmentResponse create(DepartmentRequest request) {
         Department department = mapper.toEntity(request);
         department = repository.save(department);
@@ -36,6 +38,7 @@ public class DepartmentLmpl implements DepartmentService{
     }
 
     @Override
+    @Transactional
     public DepartmentResponse update(BigInteger departmentId, DepartmentRequest request) {
         Department department = repository.findById(departmentId).orElseThrow(() -> new RuntimeException("Department not found"));
         department.setDepartmentName(request.getDepartmentName());
@@ -44,6 +47,7 @@ public class DepartmentLmpl implements DepartmentService{
         return mapper.toResponse(department);
     }
     @Override
+    @Transactional
     public DepartmentResponse delete(BigInteger departmentId) {
         Department department = repository.findById(departmentId).orElseThrow(() -> new RuntimeException("Department not found"));
         department.setDeleted(StatusConstant.DELETED);

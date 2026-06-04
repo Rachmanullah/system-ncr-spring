@@ -12,6 +12,7 @@ import com.example.ncrsystem.ncrsystem.repository.DepartmentRepository;
 import com.example.ncrsystem.ncrsystem.repository.RoleRepository;
 import com.example.ncrsystem.ncrsystem.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -39,6 +40,7 @@ public class UserLmpl implements UserService{
     }
 
     @Override
+    @Transactional
     public UserResponse create(UserRequest userRequest) {
         Department department = departmentRepository.findById(userRequest.getDepartmentId()).orElseThrow(() -> new RuntimeException("Department not found"));
         Role role = roleRepository.findById(userRequest.getRoleId()).orElseThrow(() -> new RuntimeException("Role not found"));
@@ -49,6 +51,7 @@ public class UserLmpl implements UserService{
     }
 
     @Override
+    @Transactional
     public UserResponse update(BigInteger userId, UserRequest userRequest) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Department department = departmentRepository.findById(userRequest.getDepartmentId()).orElseThrow(() -> new RuntimeException("Department not found"));
@@ -62,6 +65,7 @@ public class UserLmpl implements UserService{
     }
 
     @Override
+    @Transactional
     public UserResponse delete(BigInteger userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         user.setDeleted(StatusConstant.DELETED);

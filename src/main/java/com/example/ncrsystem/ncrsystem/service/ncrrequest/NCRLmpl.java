@@ -1,0 +1,140 @@
+package com.example.ncrsystem.ncrsystem.service.ncrrequest;
+
+import com.example.ncrsystem.ncrsystem.common.constant.StatusConstant;
+import com.example.ncrsystem.ncrsystem.common.mapper.NCRRequestMapper;
+import com.example.ncrsystem.ncrsystem.common.util.GenerateNCRNumber;
+import com.example.ncrsystem.ncrsystem.common.util.NCRNumberUtil;
+import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestDto;
+import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestResponse;
+import com.example.ncrsystem.ncrsystem.model.*;
+import com.example.ncrsystem.ncrsystem.repository.*;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.logging.Log;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class NCRLmpl implements NCRService{
+    private final NCRRequestRepository ncrRequestRepository;
+    private final NCRRequestDetailRepository ncrRequestDetailRepository;
+    private final UserRepository userRepository;
+    private final DepartmentRepository departmentRepository;
+    private final PriorityRepository priorityRepository;
+    private final NCRRequestMapper ncrRequestMapper;
+    private final GenerateNCRNumber generateNCRNumber;
+
+    @Override
+    public List<NCRRequestResponse> findAll() {
+        return ncrRequestRepository.findAllNcr()
+                .stream()
+                .map(ncrRequestMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public NCRRequestResponse create(NCRRequestDto request) {
+        User requestor = userRepository.findById(request.getRequestorId())
+                .orElseThrow(() -> new RuntimeException("Requestor not found"));
+        Department department = departmentRepository.findById(request.getDepartmentId())
+                .orElseThrow(() -> new RuntimeException("Department not found"));
+        User implementationBy = null;
+        if (request.getImplementationId() != null) {
+            implementationBy = userRepository.findById(request.getImplementationId())
+                    .orElseThrow(() -> new RuntimeException("Implementation user not found"));
+        }
+        Priority priority = priorityRepository.findById(request.getDetail().getPriorityId())
+                .orElseThrow(() -> new RuntimeException("Priority not found"));
+
+        NCRRequest ncrRequest = ncrRequestMapper.toEntity(
+                request,
+                requestor,
+                department,
+                implementationBy,
+                priority
+        );
+        if(!StringUtils.hasText(ncrRequest.getNcrNumber())){
+            LocalDate localDateNcr = request.getNcrDate().toLocalDate();
+            String ncrNumber = generateNCRNumber.generate(localDateNcr);
+            ncrRequest.setNcrNumber(ncrNumber);
+        }
+
+        if (request.getAction().equals("Create")){
+            ncrRequest.setStatusCode(StatusConstant.DRAFT_CODE);
+            ncrRequest.setStatusName(StatusConstant.DRAFT_NAME);
+        } else if (request.getAction().equals("Submit")){
+            ncrRequest.setStatusCode(StatusConstant.WAITING_APPROVAL_CODE);
+            ncrRequest.setStatusName(StatusConstant.WAITING_APPROVAL_NAME);
+        }
+
+        System.out.println(ncrRequest);
+        NCRRequest saved = ncrRequestRepository.save(ncrRequest);
+        return ncrRequestMapper.toResponse(saved);
+    }
+
+    @Override
+    public NCRRequestResponse update(BigInteger ncrId, NCRRequestDto request) {
+        User implementationBy = null;
+        NCRRequest ncrRequest = ncrRequestRepository.findById(ncrId).orElseThrow(() -> new RuntimeException("NCR Not Found"));
+        NCRRequestDetail ncrRequestDetail = ncrRequestDetailRepository
+                .findByNcrRequest_NcrId(ncrId)
+                .orElseThrow(() -> new RuntimeException("NCR Detail Not Found"));
+        User requestor = userRepository.findById(request.getRequestorId())
+                .orElseThrow(() -> new RuntimeException("Requestor not found"));
+        Department department = departmentRepository.findById(request.getDepartmentId())
+                .orElseThrow(() -> new RuntimeException("Department not found"));
+        Priority priority = priorityRepository.findById(request.getDetail().getPriorityId())
+                .orElseThrow(() -> new RuntimeException("Priority not found"));
+
+        if (request.getImplementationId() != null) {
+            implementationBy = userRepository.findById(request.getImplementationId())
+                    .orElseThrow(() -> new RuntimeException("Implementation User not found"));
+        }
+
+        ncrRequest.setNcrTitle(request.getNcrTitle());
+        ncrRequest.setNcrProject(request.getNcrProject());
+        ncrRequest.setDepartment(department);
+        ncrRequest.setImplementationBy(implementationBy);
+        if (request.getAction().equals("Submit")){
+            ncrRequest.setStatusCode(StatusConstant.WAITING_APPROVAL_CODE);
+            ncrRequest.setStatusName(StatusConstant.WAITING_APPROVAL_NAME);
+        } else if (request.getAction().equals("Cancel")) {
+            ncrRequest.setStatusCode(StatusConstant.CANCEL_CODE);
+            ncrRequest.setStatusName(StatusConstant.CANCEL_NAME);
+        }
+        ncrRequest.setStatusCode(ncrRequest.getStatusCode());
+        ncrRequest.setStatusName(ncrRequest.getStatusName());
+        ncrRequestDetail.setDescription(request.getDetail().getDescription());
+        ncrRequestDetail.setPriority(priority);
+        ncrRequestDetail.setAsIs(request.getDetail().getAsIs());
+        ncrRequestDetail.setToBe(request.getDetail().getToBe());
+        ncrRequestDetail.setImpact(request.getDetail().getImpact());
+        ncrRequestDetail.setFinancialImpact(request.getDetail().getFinancialImpact());
+        ncrRequest.setDetail(ncrRequestDetail);
+
+        NCRRequest updated = ncrRequestRepository.save(ncrRequest);
+        return ncrRequestMapper.toResponse(updated);
+    }
+
+    @Override
+    public NCRRequestResponse delete(BigInteger ncrId) {
+        NCRRequest ncrRequest = ncrRequestRepository
+                .findById(ncrId)
+                .orElseThrow(() -> new RuntimeException("NCR Not Found"));
+        NCRRequestDetail ncrRequestDetail = ncrRequestDetailRepository
+                .findByNcrRequest_NcrId(ncrId)
+                .orElseThrow(() -> new RuntimeException("NCR Detail Not Found"));
+
+        ncrRequest.setDeleted(StatusConstant.DELETED);
+        ncrRequestDetail.setDeleted(StatusConstant.DELETED);
+        ncrRequest.setDetail(ncrRequestDetail);
+        NCRRequest deleted = ncrRequestRepository.save(ncrRequest);
+        return ncrRequestMapper.toResponse(deleted);
+    }
+}

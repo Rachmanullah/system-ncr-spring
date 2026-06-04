@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 public class DepartmentMapper {
     public Department toEntity(DepartmentRequest request) {
         Department department = new Department();
+        department.setDepartmentCode(request.getDepartmentCode());
         department.setDepartmentName(request.getDepartmentName());
         department.setStatus(request.getStatus());
         return department;
@@ -20,6 +21,7 @@ public class DepartmentMapper {
         }
         DepartmentResponse response = new DepartmentResponse();
         response.setDepartmentId(department.getDepartmentId());
+        response.setDepartmentCode(department.getDepartmentCode());
         response.setDepartmentName(department.getDepartmentName());
         response.setStatus(department.getStatus());
         return response;
