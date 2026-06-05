@@ -25,6 +25,7 @@ public class UserRequest {
     @NotNull(message = "Department must be selected")
     @Min(1)
     private BigInteger departmentId;
+    private String position;
     @NotNull(message = "Role must be selected")
     @Min(1)
     private BigInteger roleId;

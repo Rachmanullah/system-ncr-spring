@@ -13,7 +13,7 @@ public class NCRDetailRequestDto {
     @Length(max = 4000)
     private String description;
     @NotNull(message = "Priority Required")
-    private BigInteger priorityId;
+    private String priority;
     @Length(max = 4000)
     private String asIs;
     @Length(max = 4000)

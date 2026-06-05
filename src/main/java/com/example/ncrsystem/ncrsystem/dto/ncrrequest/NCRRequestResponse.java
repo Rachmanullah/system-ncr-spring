@@ -13,13 +13,15 @@ import java.util.Date;
 @JsonPropertyOrder({
         "ncrId",
         "ncrNumber",
+        "ncrDate",
         "ncrTitle",
         "ncrProject",
-        "ncrDate",
         "requestorId",
         "requestorName",
         "departmentId",
         "departmentName",
+        "ncrImplementationDate",
+        "ncrCategory",
         "implementationId",
         "implementationName",
         "statusCode",
@@ -37,6 +39,8 @@ public class NCRRequestResponse {
     private String requestorName;
     private BigInteger departmentId;
     private String departmentName;
+    private Date ncrImplementationDate;
+    private String ncrCategory;
     private BigInteger implementationId;
     private String implementationName;
     private String statusCode;

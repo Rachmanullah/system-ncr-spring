@@ -7,10 +7,10 @@ import com.example.ncrsystem.ncrsystem.model.*;
 import org.springframework.stereotype.Component;
 @Component
 public class NCRRequestMapper {
-    public NCRRequest toEntity(NCRRequestDto ncrRequestDto, User requestor, Department department, User implementationBy, Priority priority){
+    public NCRRequest toEntity(NCRRequestDto ncrRequestDto, User requestor, Department department, User implementationBy){
         NCRRequestDetail ncrRequestDetail = NCRRequestDetail.builder()
                 .description(ncrRequestDto.getDetail().getDescription())
-                .priority(priority)
+                .priority(ncrRequestDto.getDetail().getPriority())
                 .asIs(ncrRequestDto.getDetail().getAsIs())
                 .toBe(ncrRequestDto.getDetail().getToBe())
                 .benefit(ncrRequestDto.getDetail().getBenefit())
@@ -25,6 +25,8 @@ public class NCRRequestMapper {
                 .ncrDate(ncrRequestDto.getNcrDate())
                 .requestor(requestor)
                 .department(department)
+                .ncrImplementationDate(ncrRequestDto.getNcrImplementationDate())
+                .ncrCategory(ncrRequestDto.getNcrCategory())
                 .implementationBy(implementationBy)
                 .statusCode(ncrRequestDto.getStatusCode())
                 .statusName(ncrRequestDto.getStatusName())
@@ -44,6 +46,8 @@ public class NCRRequestMapper {
                 .ncrTitle(entity.getNcrTitle())
                 .ncrProject(entity.getNcrProject())
                 .ncrDate(entity.getNcrDate())
+                .ncrImplementationDate(entity.getNcrImplementationDate())
+                .ncrCategory(entity.getNcrCategory())
                 .requestorId(
                         entity.getRequestor() != null
                                 ? entity.getRequestor().getUserId()
@@ -87,11 +91,7 @@ public class NCRRequestMapper {
                                                 : null
                                 )
                                 .description(detail.getDescription())
-                                .priorityId(
-                                        detail.getPriority() != null
-                                                ? detail.getPriority().getPriorityId()
-                                                : null
-                                )
+                                .priority(detail.getPriority())
                                 .asIs(detail.getAsIs())
                                 .toBe(detail.getToBe())
                                 .benefit(detail.getBenefit())

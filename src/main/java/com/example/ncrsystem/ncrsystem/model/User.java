@@ -36,36 +36,38 @@ public class User {
     @NotBlank
     @Column(name="PASSWORD", length = 150, nullable = false)
     private String password;
-    @Column(name="FULLNAME", length = 150, nullable = true)
+    @Column(name="FULLNAME", length = 150)
     private String fullname;
     @Email
-    @Column(name="EMAIL", length = 100, nullable = true)
+    @Column(name="EMAIL", length = 100)
     private String email;
-    @Column(name="STATUS", nullable = true)
-    @OneToMany(mappedBy = "requestor")
-    private List<NCRRequest> requestedNcrs;
-
-    @OneToMany(mappedBy = "implementationBy")
-    private List<NCRRequest> implementedNcrs;
-    private BigInteger status;
-    @Column(name="DELETED", nullable = true)
-    private BigInteger deleted;
-    @CreationTimestamp
-    @Column(name="CREATED", nullable = true)
-    private Date created;
-    @Column(name="CREATED_BY_LOGIN_HISTORY", nullable = true)
-    private BigInteger createdByLoginHistory;
-    @UpdateTimestamp
-    @Column(name="LAST_MODIFIED", nullable = true)
-    private Date latModified;
-    @Column(name="LAST_MODIFIED_BY_LOGIN_HISTORY", nullable = true)
-    private BigInteger lastModifiedByLoginHistory;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DEPARTMENT_ID")
     private Department department;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ROLE_ID")
     private Role role;
+    @Column(name = "POSITION", length = 100)
+    private String position;
+    @OneToMany(mappedBy = "requestor")
+    private List<NCRRequest> requestedNcr;
+    @OneToMany(mappedBy = "implementationBy")
+    private List<NCRRequest> implementedNcr;
+    @Column(name="STATUS")
+    private BigInteger status;
+    @Column(name="DELETED")
+    private BigInteger deleted;
+    @CreationTimestamp
+    @Column(name="CREATED")
+    private Date created;
+    @Column(name="CREATED_BY_LOGIN_HISTORY")
+    private BigInteger createdByLoginHistory;
+    @UpdateTimestamp
+    @Column(name="LAST_MODIFIED")
+    private Date latModified;
+    @Column(name="LAST_MODIFIED_BY_LOGIN_HISTORY")
+    private BigInteger lastModifiedByLoginHistory;
+
     @PrePersist
     @PreUpdate
     public void prePersist() {
@@ -77,13 +79,14 @@ public class User {
         }
     }
     public User(){};
-    public User(String username, String password, String fullname, String email, Role role, Department department, BigInteger status){
+    public User(String username, String password, String fullname, String email, Role role, Department department, String position, BigInteger status){
         this.username = username;
         this.password = password;
         this.fullname = fullname;
         this.email = email;
         this.role = role;
         this.department = department;
+        this.position = position;
         this.status = status;
     };
 
@@ -101,6 +104,8 @@ public class User {
     public void setRole(Role role){this.role = role;}
     public Department getDepartment(){return this.department;}
     public void setDepartmentId(Department department){this.department = department;}
+    public String getPostion(){return this.position;}
+    public void  setPosition(String position){this.position = position;}
     public BigInteger getStatus(){return this.status;}
     public void setStatus(BigInteger status){this.status = status;}
 }

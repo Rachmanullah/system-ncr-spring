@@ -13,9 +13,10 @@ import java.math.BigInteger;
         "username",
         "fullname",
         "email",
-        "status",
+        "position",
         "department",
-        "role"
+        "role",
+        "status",
 })
 public class UserResponse {
     private BigInteger userId;
@@ -24,5 +25,6 @@ public class UserResponse {
     private String email;
     private DepartmentResponse department;
     private RoleResponse role;
+    private String position;
     private BigInteger status;
 }

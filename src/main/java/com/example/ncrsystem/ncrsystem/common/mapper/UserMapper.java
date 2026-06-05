@@ -25,6 +25,7 @@ public class UserMapper {
         user.setEmail(request.getEmail());
         user.setStatus(request.getStatus());
         user.setDepartment(department);
+        user.setPosition(request.getPosition());
         user.setRole(role);
         return user;
     }
@@ -40,6 +41,7 @@ public class UserMapper {
         response.setStatus(user.getStatus());
         response.setDepartment(departmentMapper.toResponse(user.getDepartment()));
         response.setRole(roleMapper.toResponse(user.getRole()));
+        response.setPosition(user.getPosition());
         return response;
     }
 
@@ -50,5 +52,6 @@ public class UserMapper {
         entity.setStatus(request.getStatus());
         entity.setDepartment(department);
         entity.setRole(role);
+        entity.setPosition(request.getPosition());
     }
 }

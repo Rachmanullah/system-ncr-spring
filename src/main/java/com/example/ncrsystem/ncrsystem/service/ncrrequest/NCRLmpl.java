@@ -3,13 +3,11 @@ package com.example.ncrsystem.ncrsystem.service.ncrrequest;
 import com.example.ncrsystem.ncrsystem.common.constant.StatusConstant;
 import com.example.ncrsystem.ncrsystem.common.mapper.NCRRequestMapper;
 import com.example.ncrsystem.ncrsystem.common.util.GenerateNCRNumber;
-import com.example.ncrsystem.ncrsystem.common.util.NCRNumberUtil;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestDto;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestResponse;
 import com.example.ncrsystem.ncrsystem.model.*;
 import com.example.ncrsystem.ncrsystem.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -26,7 +24,6 @@ public class NCRLmpl implements NCRService{
     private final NCRRequestDetailRepository ncrRequestDetailRepository;
     private final UserRepository userRepository;
     private final DepartmentRepository departmentRepository;
-    private final PriorityRepository priorityRepository;
     private final NCRRequestMapper ncrRequestMapper;
     private final GenerateNCRNumber generateNCRNumber;
 
@@ -49,16 +46,14 @@ public class NCRLmpl implements NCRService{
             implementationBy = userRepository.findById(request.getImplementationId())
                     .orElseThrow(() -> new RuntimeException("Implementation user not found"));
         }
-        Priority priority = priorityRepository.findById(request.getDetail().getPriorityId())
-                .orElseThrow(() -> new RuntimeException("Priority not found"));
 
         NCRRequest ncrRequest = ncrRequestMapper.toEntity(
                 request,
                 requestor,
                 department,
-                implementationBy,
-                priority
+                implementationBy
         );
+
         if(!StringUtils.hasText(ncrRequest.getNcrNumber())){
             LocalDate localDateNcr = request.getNcrDate().toLocalDate();
             String ncrNumber = generateNCRNumber.generate(localDateNcr);
@@ -89,8 +84,6 @@ public class NCRLmpl implements NCRService{
                 .orElseThrow(() -> new RuntimeException("Requestor not found"));
         Department department = departmentRepository.findById(request.getDepartmentId())
                 .orElseThrow(() -> new RuntimeException("Department not found"));
-        Priority priority = priorityRepository.findById(request.getDetail().getPriorityId())
-                .orElseThrow(() -> new RuntimeException("Priority not found"));
 
         if (request.getImplementationId() != null) {
             implementationBy = userRepository.findById(request.getImplementationId())
@@ -111,7 +104,7 @@ public class NCRLmpl implements NCRService{
         ncrRequest.setStatusCode(ncrRequest.getStatusCode());
         ncrRequest.setStatusName(ncrRequest.getStatusName());
         ncrRequestDetail.setDescription(request.getDetail().getDescription());
-        ncrRequestDetail.setPriority(priority);
+        ncrRequestDetail.setPriority(request.getDetail().getPriority());
         ncrRequestDetail.setAsIs(request.getDetail().getAsIs());
         ncrRequestDetail.setToBe(request.getDetail().getToBe());
         ncrRequestDetail.setImpact(request.getDetail().getImpact());

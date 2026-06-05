@@ -1,15 +1,32 @@
 package com.example.ncrsystem.ncrsystem.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.CreatedDate;
-
 import java.math.BigInteger;
 import java.sql.Date;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -31,11 +48,6 @@ public class NCRRequest {
     @NotBlank
     @Column(name = "NCR_NUMBER", nullable = false, length = 20)
     private String ncrNumber;
-    @NotBlank
-    @Column(name = "TITLE", nullable = false, length = 150)
-    private String ncrTitle;
-    @Column(name = "PROJECT_NAME", length = 100)
-    private String ncrProject;
     @CreatedDate
     @Column(name = "NCR_DATE",nullable = false)
     private Date ncrDate;
@@ -45,9 +57,18 @@ public class NCRRequest {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DEPARTMENT_ID")
     private Department department;
+    @NotBlank
+    @Column(name = "TITLE", nullable = false, length = 150)
+    private String ncrTitle;
+    @Column(name = "PROJECT_NAME", length = 100)
+    private String ncrProject;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IMPLEMENTATION_ID",nullable = true)
     private User implementationBy;
+    @Column(name = "NCR_IMPLEMENTATION_DATE",nullable = false)
+    private Date ncrImplementationDate;
+    @Column(name="CATEGORY",length = 50)
+    private String ncrCategory;
     @Column(name = "STATUS_CODE", length = 10)
     private String statusCode;
     @Column(name = "STATUS_NAME", length = 100)

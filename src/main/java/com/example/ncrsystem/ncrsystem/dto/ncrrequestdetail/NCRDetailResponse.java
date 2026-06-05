@@ -11,7 +11,7 @@ import java.math.BigInteger;
 @JsonPropertyOrder({
         "ncrDetailId",
         "description",
-        "priorityId",
+        "priority",
         "asIs",
         "toBe",
         "benefit",
@@ -21,7 +21,7 @@ import java.math.BigInteger;
 public class NCRDetailResponse {
     private BigInteger ncrDetailId;
     private String description;
-    private BigInteger priorityId;
+    private String priority;
     private String asIs;
     private String toBe;
     private String benefit;

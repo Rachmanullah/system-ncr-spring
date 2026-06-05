@@ -36,9 +36,8 @@ public class NCRRequestDetail {
     @NotBlank
     @Column(name = "DESCRIPTION", columnDefinition = "TEXT")
     private String description;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PRIORITY_ID")
-    private Priority priority;
+    @Column(name = "PRIORITY")
+    private String priority;
     @Column(name = "AS_IS", columnDefinition = "TEXT")
     private String asIs;
     @Column(name = "TO_BE", columnDefinition = "TEXT")

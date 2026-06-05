@@ -12,16 +12,17 @@ import java.sql.Date;
 
 @Data
 public class NCRRequestDto {
+    private String ncrNumber;
+
+    @NotNull(message = "NCR Date Required")
+    private Date ncrDate;
+
     @NotBlank(message = "NCR Title Required")
     @Length(max = 150)
     private String ncrTitle;
 
-    private String ncrNumber;
-
     @Length(max=100)
     private String ncrProject;
-    @NotNull(message = "NCR Date Required")
-    private Date ncrDate;
 
     @NotNull(message = "Requestor Required")
     private BigInteger requestorId;
@@ -29,12 +30,17 @@ public class NCRRequestDto {
     @NotNull(message = "Department Required")
     private BigInteger departmentId;
 
+    private Date ncrImplementationDate;
+
+    @NotNull(message = "Category Required")
+    private String ncrCategory;
+
     private BigInteger implementationId;
 
-    @NotNull(message = "Action Required")
-    private String action;
     private String statusCode;
     private String statusName;
+    @NotNull(message = "Action Required")
+    private String action;
     @Valid
     @NotNull(message = "Detail Required")
     private NCRDetailRequestDto detail;
