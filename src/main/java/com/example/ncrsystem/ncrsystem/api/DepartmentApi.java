@@ -4,7 +4,7 @@ import com.example.ncrsystem.ncrsystem.dto.department.DepartmentRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api/departments")
+@RequestMapping("/api/master/departments")
 public interface DepartmentApi {
     @GetMapping
     ResponseEntity<?> findAll();

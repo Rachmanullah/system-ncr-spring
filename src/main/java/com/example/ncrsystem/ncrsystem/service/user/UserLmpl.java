@@ -33,7 +33,7 @@ public class UserLmpl implements UserService{
 
     @Override
     public List<UserResponse> findAll() {
-        return userRepository.findAll()
+        return userRepository.findAllUsers()
                 .stream()
                 .map(userMapper::toResponse)
                 .toList();

@@ -37,34 +37,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            writeResponse(
-                    response,
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    "Missing Authorization Header"
-            );
-            return;
-        }
+//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            writeResponse(
+//                    response,
+//                    HttpServletResponse.SC_UNAUTHORIZED,
+//                    "Missing Authorization Header"
+//            );
+//            return;
+//        }
+//
+//        String token = authHeader.substring(7);
+//
+//        if (!jwtService.validateToken(token)) {
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            writeResponse(
+//                    response,
+//                    HttpServletResponse.SC_UNAUTHORIZED,
+//                    "Invalid Token"
+//            );
+//            return;
+//        }
 
-        String token = authHeader.substring(7);
-
-        if (!jwtService.validateToken(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            writeResponse(
-                    response,
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    "Invalid Token"
-            );
-            return;
-        }
-
-        Claims claims = jwtService.extractAllClaims(token);
-        System.out.println("Token Payload : "+ claims);
-
-        request.setAttribute("claims", claims);
-        request.setAttribute("userId", claims.get("userId"));
-        request.setAttribute("username", claims.getSubject());
+//        Claims claims = jwtService.extractAllClaims(token);
+//        System.out.println("Token Payload : "+ claims);
+//
+//        request.setAttribute("claims", claims);
+//        request.setAttribute("userId", claims.get("userId"));
+//        request.setAttribute("username", claims.getSubject());
 
         filterChain.doFilter(request, response);
     }
