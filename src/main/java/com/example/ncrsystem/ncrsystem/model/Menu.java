@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigInteger;
 import java.sql.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -45,6 +46,12 @@ public class Menu {
     private Date latModified;
     @Column(name="LAST_MODIFIED_BY_LOGIN_HISTORY")
     private BigInteger lastModifiedByLoginHistory;
+    @OneToMany(
+            mappedBy = "menu",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<RoleMenu> roleMenus;
     @PrePersist
     @PreUpdate
     public void prePersist() {

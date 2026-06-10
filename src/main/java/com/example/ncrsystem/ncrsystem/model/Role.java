@@ -44,6 +44,12 @@ public class Role {
     private BigInteger lastModifiedByLoginHistory;
     @OneToMany(mappedBy = "role")
     private List<User> users;
+    @OneToMany(
+            mappedBy = "role",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<RoleMenu> roleMenus;
     @PrePersist
     @PreUpdate
     public void prePersist() {
