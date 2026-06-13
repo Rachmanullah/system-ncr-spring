@@ -18,4 +18,17 @@ public class NCRNumberUtil {
                 runningNumber
         );
     }
+
+    public static String generateMatrixCode(
+            LocalDate date,
+            Integer runningNumber,
+            String deptCode
+    ) {
+        return String.format(
+                "NCR-%s-%d-%04d",
+                deptCode,
+                date.getYear(),
+                runningNumber
+        );
+    }
 }

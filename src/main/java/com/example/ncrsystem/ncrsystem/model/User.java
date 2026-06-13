@@ -53,6 +53,8 @@ public class User {
     private List<NCRRequest> requestedNcr;
     @OneToMany(mappedBy = "implementationBy")
     private List<NCRRequest> implementedNcr;
+    @OneToMany(mappedBy = "approver")
+    private List<NCRMatrixDetail> ncrMatrixDetails;
     @Column(name="STATUS")
     private BigInteger status;
     @Column(name="DELETED")

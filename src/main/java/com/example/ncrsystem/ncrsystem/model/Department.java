@@ -53,6 +53,8 @@ public class Department {
     private List<User> users;
     @OneToMany(mappedBy = "department")
     private List<NCRRequest> ncrRequests;
+    @OneToMany(mappedBy = "department")
+    private List<NCRMatrixApproval> ncrMatrixApproval;
     @PrePersist
     @PreUpdate
     public void prePersist() {
