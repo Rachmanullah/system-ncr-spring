@@ -42,7 +42,7 @@ public class MenuLmpl implements MenuService{
 
     @Override
     public MenuResponse create(MenuRequest menuRequest) {
-        if(menuRequest.getMenuParentId() != null){
+        if(menuRequest.getMenuParentId() != null && menuRequest.getMenuParentId() != 0){
             menuRepository.findById(BigInteger.valueOf(menuRequest.getMenuParentId()))
                     .orElseThrow(()-> new RuntimeException("Parent Menu not found"));
         }

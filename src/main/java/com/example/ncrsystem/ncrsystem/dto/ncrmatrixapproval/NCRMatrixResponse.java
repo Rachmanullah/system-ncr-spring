@@ -14,9 +14,7 @@ import java.util.List;
         "departmentId",
         "departmentCode",
         "departmentName",
-        "approverId",
-        "approverName",
-        "ApproverPosition",
+        "approver",
         "status"
 })
 public class NCRMatrixResponse {
@@ -29,6 +27,12 @@ public class NCRMatrixResponse {
     private List<ApproverResponse> approver;
 
     @Data
+    @JsonPropertyOrder({
+            "approverId",
+            "approverName",
+            "approverPosition",
+            "orderNumber"
+    })
     public static class ApproverResponse {
         private BigInteger approverId;
         private String approverName;

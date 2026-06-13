@@ -19,10 +19,7 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,9 +69,9 @@ public class NCRMatrixLmpl implements NCRMatrixService{
                                 "Department not found"
                         ));
 
-        if (!StringUtils.hasText(
-                request.getNcrMatrixCode()
-        )) {
+//        if (!StringUtils.hasText(
+//                request.getNcrMatrixCode()
+//        )) {
 
             request.setNcrMatrixCode(
                     generateNCRMatrixCode.generate(
@@ -82,7 +79,7 @@ public class NCRMatrixLmpl implements NCRMatrixService{
                             department.getDepartmentCode()
                     )
             );
-        }
+//        }
 
         NCRMatrixApproval header =
                 matrixMapper.toHeader(
@@ -152,12 +149,14 @@ public class NCRMatrixLmpl implements NCRMatrixService{
                 );
             }
         }
-        header.setNcrMatrixCode(
-                generateNCRMatrixCode.generate(
-                        LocalDate.now(),
-                        department.getDepartmentCode()
-                )
-        );
+        if(!Objects.equals(header.getDepartment().getDepartmentId(), department.getDepartmentId())){
+            header.setNcrMatrixCode(
+                    generateNCRMatrixCode.generate(
+                            LocalDate.now(),
+                            department.getDepartmentCode()
+                    )
+            );
+        }
         header.setDepartment(
                 department
         );
