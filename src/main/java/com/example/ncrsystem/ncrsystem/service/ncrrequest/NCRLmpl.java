@@ -5,8 +5,15 @@ import com.example.ncrsystem.ncrsystem.common.mapper.NCRRequestMapper;
 import com.example.ncrsystem.ncrsystem.common.util.GenerateNCRNumber;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestDto;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestResponse;
-import com.example.ncrsystem.ncrsystem.model.*;
-import com.example.ncrsystem.ncrsystem.repository.*;
+
+import com.example.ncrsystem.ncrsystem.model.Department;
+import com.example.ncrsystem.ncrsystem.model.NCRRequest;
+import com.example.ncrsystem.ncrsystem.model.NCRRequestDetail;
+import com.example.ncrsystem.ncrsystem.model.User;
+import com.example.ncrsystem.ncrsystem.repository.DepartmentRepository;
+import com.example.ncrsystem.ncrsystem.repository.NCRRequestDetailRepository;
+import com.example.ncrsystem.ncrsystem.repository.NCRRequestRepository;
+import com.example.ncrsystem.ncrsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,17 +43,19 @@ public class NCRLmpl implements NCRService{
     }
 
     @Override
+    @Transactional
     public NCRRequestResponse create(NCRRequestDto request) {
         User requestor = userRepository.findById(request.getRequestorId())
                 .orElseThrow(() -> new RuntimeException("Requestor not found"));
         Department department = departmentRepository.findById(request.getDepartmentId())
                 .orElseThrow(() -> new RuntimeException("Department not found"));
         User implementationBy = null;
-        if (request.getImplementationId() != null) {
+
+        if (request.getImplementationId() != null && request.getImplementationId().compareTo(BigInteger.ZERO) > 0) {
             implementationBy = userRepository.findById(request.getImplementationId())
                     .orElseThrow(() -> new RuntimeException("Implementation user not found"));
         }
-
+        System.out.println(request.toString());
         NCRRequest ncrRequest = ncrRequestMapper.toEntity(
                 request,
                 requestor,
@@ -74,7 +83,9 @@ public class NCRLmpl implements NCRService{
     }
 
     @Override
+    @Transactional
     public NCRRequestResponse update(BigInteger ncrId, NCRRequestDto request) {
+        System.out.println("header : "+ request.toString());
         User implementationBy = null;
         NCRRequest ncrRequest = ncrRequestRepository.findById(ncrId).orElseThrow(() -> new RuntimeException("NCR Not Found"));
         NCRRequestDetail ncrRequestDetail = ncrRequestDetailRepository
@@ -94,6 +105,7 @@ public class NCRLmpl implements NCRService{
         ncrRequest.setNcrProject(request.getNcrProject());
         ncrRequest.setDepartment(department);
         ncrRequest.setImplementationBy(implementationBy);
+        ncrRequest.setNcrImplementationDate(request.getNcrImplementationDate());
         if (request.getAction().equals("Submit")){
             ncrRequest.setStatusCode(StatusConstant.WAITING_APPROVAL_CODE);
             ncrRequest.setStatusName(StatusConstant.WAITING_APPROVAL_NAME);
@@ -116,6 +128,7 @@ public class NCRLmpl implements NCRService{
     }
 
     @Override
+    @Transactional
     public NCRRequestResponse delete(BigInteger ncrId) {
         NCRRequest ncrRequest = ncrRequestRepository
                 .findById(ncrId)

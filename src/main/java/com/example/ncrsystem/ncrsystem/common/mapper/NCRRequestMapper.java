@@ -3,7 +3,11 @@ package com.example.ncrsystem.ncrsystem.common.mapper;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestDto;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestResponse;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequestdetail.NCRDetailResponse;
-import com.example.ncrsystem.ncrsystem.model.*;
+
+import com.example.ncrsystem.ncrsystem.model.Department;
+import com.example.ncrsystem.ncrsystem.model.NCRRequest;
+import com.example.ncrsystem.ncrsystem.model.NCRRequestDetail;
+import com.example.ncrsystem.ncrsystem.model.User;
 import org.springframework.stereotype.Component;
 @Component
 public class NCRRequestMapper {

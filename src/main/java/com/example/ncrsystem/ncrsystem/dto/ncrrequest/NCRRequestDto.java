@@ -1,6 +1,7 @@
 package com.example.ncrsystem.ncrsystem.dto.ncrrequest;
 
 import com.example.ncrsystem.ncrsystem.dto.ncrrequestdetail.NCRDetailRequestDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ public class NCRRequestDto {
     private String ncrNumber;
 
     @NotNull(message = "NCR Date Required")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date ncrDate;
 
     @NotBlank(message = "NCR Title Required")
@@ -29,7 +31,7 @@ public class NCRRequestDto {
 
     @NotNull(message = "Department Required")
     private BigInteger departmentId;
-
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date ncrImplementationDate;
 
     @NotNull(message = "Category Required")

@@ -14,7 +14,7 @@ import java.sql.Date;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "NCR_REQUEST_MAIN")
+@Table(name = "NCR_REQUEST_ATTACHMENT")
 public class NCRAttachment {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ncr_attachment_seq")
@@ -28,7 +28,7 @@ public class NCRAttachment {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "NCR_ID",
-            nullable = false,
+            nullable = true,
             unique = true
     )
     private NCRRequest ncrRequest;

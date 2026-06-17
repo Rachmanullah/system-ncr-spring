@@ -1,18 +1,15 @@
 package com.example.ncrsystem.ncrsystem.dto.ncrrequestdetail;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-
-import java.math.BigInteger;
 
 @Data
 public class NCRDetailRequestDto {
     @NotBlank(message = "Description Required")
     @Length(max = 4000)
     private String description;
-    @NotNull(message = "Priority Required")
+    @NotBlank(message = "Priority Required")
     private String priority;
     @Length(max = 4000)
     private String asIs;

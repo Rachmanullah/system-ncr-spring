@@ -63,9 +63,9 @@ public class NCRRequest {
     @Column(name = "PROJECT_NAME", length = 100)
     private String ncrProject;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IMPLEMENTATION_ID",nullable = true)
+    @JoinColumn(name = "IMPLEMENTATION_ID")
     private User implementationBy;
-    @Column(name = "NCR_IMPLEMENTATION_DATE",nullable = false)
+    @Column(name = "NCR_IMPLEMENTATION_DATE")
     private Date ncrImplementationDate;
     @Column(name="CATEGORY",length = 50)
     private String ncrCategory;
