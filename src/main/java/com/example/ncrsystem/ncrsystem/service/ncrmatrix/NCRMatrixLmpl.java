@@ -69,6 +69,19 @@ public class NCRMatrixLmpl implements NCRMatrixService{
                                 "Department not found"
                         ));
 
+        Optional<NCRMatrixApproval> existingMatrix =
+                matrixApprovalRepository
+                        .findByDepartmentDepartmentIdAndDeleted(
+                                request.getDepartmentId(),
+                                StatusConstant.ACTIVE
+                        );
+
+        if (existingMatrix.isPresent()) {
+            throw new RuntimeException(
+                    "Approval Matrix already exists for this department"
+            );
+        }
+
 //        if (!StringUtils.hasText(
 //                request.getNcrMatrixCode()
 //        )) {

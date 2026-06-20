@@ -6,14 +6,8 @@ import com.example.ncrsystem.ncrsystem.common.util.GenerateNCRNumber;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestDto;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestResponse;
 
-import com.example.ncrsystem.ncrsystem.model.Department;
-import com.example.ncrsystem.ncrsystem.model.NCRRequest;
-import com.example.ncrsystem.ncrsystem.model.NCRRequestDetail;
-import com.example.ncrsystem.ncrsystem.model.User;
-import com.example.ncrsystem.ncrsystem.repository.DepartmentRepository;
-import com.example.ncrsystem.ncrsystem.repository.NCRRequestDetailRepository;
-import com.example.ncrsystem.ncrsystem.repository.NCRRequestRepository;
-import com.example.ncrsystem.ncrsystem.repository.UserRepository;
+import com.example.ncrsystem.ncrsystem.model.*;
+import com.example.ncrsystem.ncrsystem.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +16,7 @@ import org.springframework.util.StringUtils;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +28,7 @@ public class NCRLmpl implements NCRService{
     private final DepartmentRepository departmentRepository;
     private final NCRRequestMapper ncrRequestMapper;
     private final GenerateNCRNumber generateNCRNumber;
+    private final NCRMatrixApprovalRepository matrixApprovalRepository;
 
     @Override
     public List<NCRRequestResponse> findAll() {
@@ -49,8 +45,13 @@ public class NCRLmpl implements NCRService{
                 .orElseThrow(() -> new RuntimeException("Requestor not found"));
         Department department = departmentRepository.findById(request.getDepartmentId())
                 .orElseThrow(() -> new RuntimeException("Department not found"));
+        Optional<NCRMatrixApproval> existingMatrix =
+                matrixApprovalRepository
+                        .findByDepartmentDepartmentIdAndDeleted(
+                                request.getDepartmentId(),
+                                StatusConstant.ACTIVE
+                        );
         User implementationBy = null;
-
         if (request.getImplementationId() != null && request.getImplementationId().compareTo(BigInteger.ZERO) > 0) {
             implementationBy = userRepository.findById(request.getImplementationId())
                     .orElseThrow(() -> new RuntimeException("Implementation user not found"));
@@ -73,6 +74,11 @@ public class NCRLmpl implements NCRService{
             ncrRequest.setStatusCode(StatusConstant.DRAFT_CODE);
             ncrRequest.setStatusName(StatusConstant.DRAFT_NAME);
         } else if (request.getAction().equals("Submit")){
+            if (existingMatrix.isEmpty()){
+                throw new RuntimeException(
+                        "Approval Matrix not exists for this department"
+                );
+            }
             ncrRequest.setStatusCode(StatusConstant.WAITING_APPROVAL_CODE);
             ncrRequest.setStatusName(StatusConstant.WAITING_APPROVAL_NAME);
         }
@@ -95,7 +101,12 @@ public class NCRLmpl implements NCRService{
                 .orElseThrow(() -> new RuntimeException("Requestor not found"));
         Department department = departmentRepository.findById(request.getDepartmentId())
                 .orElseThrow(() -> new RuntimeException("Department not found"));
-
+        Optional<NCRMatrixApproval> existingMatrix =
+                matrixApprovalRepository
+                        .findByDepartmentDepartmentIdAndDeleted(
+                                request.getDepartmentId(),
+                                StatusConstant.ACTIVE
+                        );
         if (request.getImplementationId() != null) {
             implementationBy = userRepository.findById(request.getImplementationId())
                     .orElseThrow(() -> new RuntimeException("Implementation User not found"));
@@ -107,6 +118,11 @@ public class NCRLmpl implements NCRService{
         ncrRequest.setImplementationBy(implementationBy);
         ncrRequest.setNcrImplementationDate(request.getNcrImplementationDate());
         if (request.getAction().equals("Submit")){
+            if (existingMatrix.isEmpty()){
+                throw new RuntimeException(
+                        "Approval Matrix not exists for this department"
+                );
+            }
             ncrRequest.setStatusCode(StatusConstant.WAITING_APPROVAL_CODE);
             ncrRequest.setStatusName(StatusConstant.WAITING_APPROVAL_NAME);
         } else if (request.getAction().equals("Cancel")) {

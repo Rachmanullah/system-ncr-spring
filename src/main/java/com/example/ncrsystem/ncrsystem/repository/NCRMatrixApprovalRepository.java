@@ -35,4 +35,9 @@ public interface NCRMatrixApprovalRepository extends JpaRepository<NCRMatrixAppr
             BigInteger id,
             BigInteger deleted
     );
+    Optional<NCRMatrixApproval>
+    findByDepartmentDepartmentIdAndDeleted(
+            BigInteger departmentId,
+            BigInteger deleted
+    );
 }
