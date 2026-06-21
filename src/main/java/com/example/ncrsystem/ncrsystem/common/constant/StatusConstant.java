@@ -17,4 +17,5 @@ public class StatusConstant {
     public static final String APPROVE_NAME = "Approve";
     public static final String CANCEL_NAME = "Cancel";
     public static final String CLOSE_NAME = "Close";
+    public static final String SUBMIT= "Submit";
 }

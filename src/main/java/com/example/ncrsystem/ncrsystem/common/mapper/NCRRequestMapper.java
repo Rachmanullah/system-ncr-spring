@@ -1,14 +1,15 @@
 package com.example.ncrsystem.ncrsystem.common.mapper;
 
+import com.example.ncrsystem.ncrsystem.dto.ncrlogs.NCRLogsResponse;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestDto;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestResponse;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequestdetail.NCRDetailResponse;
 
-import com.example.ncrsystem.ncrsystem.model.Department;
-import com.example.ncrsystem.ncrsystem.model.NCRRequest;
-import com.example.ncrsystem.ncrsystem.model.NCRRequestDetail;
-import com.example.ncrsystem.ncrsystem.model.User;
+import com.example.ncrsystem.ncrsystem.model.*;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+
 @Component
 public class NCRRequestMapper {
     public NCRRequest toEntity(NCRRequestDto ncrRequestDto, User requestor, Department department, User implementationBy){
@@ -44,6 +45,7 @@ public class NCRRequestMapper {
 
     public NCRRequestResponse toResponse(NCRRequest entity){
         NCRRequestDetail detail = entity.getDetail();
+        List<NCRLogs> ncrLogs = entity.getNcrLogs();
         return NCRRequestResponse.builder()
                 .ncrId(entity.getNcrId())
                 .ncrNumber(entity.getNcrNumber())
@@ -103,6 +105,23 @@ public class NCRRequestMapper {
                                 .financialImpact(detail.getFinancialImpact())
                                 .build()
                 )
+                .ncrLogs(
+                ncrLogs == null
+                        ? null
+                        : ncrLogs.stream()
+                        .map(log -> NCRLogsResponse.builder()
+                                .ncrLogId(log.getNcrLogId())
+                                .orderNumber(log.getOrderNumber())
+                                .statusName(log.getStatusName())
+                                .statusName(log.getStatusName())
+                                .notes(log.getNotes())
+                                .username(log.getUser().getUsername())
+                                .userPosition(log.getUser().getPosition())
+                                .date(log.getCreated())
+                                .build()
+                        )
+                        .toList()
+        )
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.ncrsystem.ncrsystem.service.ncrrequest;
 
 import com.example.ncrsystem.ncrsystem.common.constant.StatusConstant;
+import com.example.ncrsystem.ncrsystem.common.mapper.NCRLogsMapper;
 import com.example.ncrsystem.ncrsystem.common.mapper.NCRRequestMapper;
 import com.example.ncrsystem.ncrsystem.common.util.GenerateNCRNumber;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestDto;
@@ -29,7 +30,8 @@ public class NCRLmpl implements NCRService{
     private final NCRRequestMapper ncrRequestMapper;
     private final GenerateNCRNumber generateNCRNumber;
     private final NCRMatrixApprovalRepository matrixApprovalRepository;
-
+    private final NCRLogsMapper ncrLogsMapper;
+    private final NCRLogsRepository ncrLogsRepository;
     @Override
     public List<NCRRequestResponse> findAll() {
         return ncrRequestRepository.findAllNcr()
@@ -52,6 +54,9 @@ public class NCRLmpl implements NCRService{
                                 StatusConstant.ACTIVE
                         );
         User implementationBy = null;
+        NCRLogs ncrLogs = new NCRLogs();
+        ncrLogs.setUser(requestor);
+        ncrLogs.setOrderNumber(0);
         if (request.getImplementationId() != null && request.getImplementationId().compareTo(BigInteger.ZERO) > 0) {
             implementationBy = userRepository.findById(request.getImplementationId())
                     .orElseThrow(() -> new RuntimeException("Implementation user not found"));
@@ -73,6 +78,7 @@ public class NCRLmpl implements NCRService{
         if (request.getAction().equals("Create")){
             ncrRequest.setStatusCode(StatusConstant.DRAFT_CODE);
             ncrRequest.setStatusName(StatusConstant.DRAFT_NAME);
+            ncrLogs.setStatusName(StatusConstant.DRAFT_NAME);
         } else if (request.getAction().equals("Submit")){
             if (existingMatrix.isEmpty()){
                 throw new RuntimeException(
@@ -81,10 +87,13 @@ public class NCRLmpl implements NCRService{
             }
             ncrRequest.setStatusCode(StatusConstant.WAITING_APPROVAL_CODE);
             ncrRequest.setStatusName(StatusConstant.WAITING_APPROVAL_NAME);
+            ncrLogs.setStatusName(StatusConstant.SUBMIT);
         }
 
         System.out.println(ncrRequest);
         NCRRequest saved = ncrRequestRepository.save(ncrRequest);
+        ncrLogs.setNcrRequest(saved);
+        ncrLogsRepository.save(ncrLogs);
         return ncrRequestMapper.toResponse(saved);
     }
 
@@ -107,6 +116,10 @@ public class NCRLmpl implements NCRService{
                                 request.getDepartmentId(),
                                 StatusConstant.ACTIVE
                         );
+        NCRLogs ncrLogs = new NCRLogs();
+        ncrLogs.setUser(requestor);
+        ncrLogs.setOrderNumber(0);
+        ncrLogs.setStatusName(StatusConstant.DRAFT_NAME);
         if (request.getImplementationId() != null) {
             implementationBy = userRepository.findById(request.getImplementationId())
                     .orElseThrow(() -> new RuntimeException("Implementation User not found"));
@@ -125,9 +138,11 @@ public class NCRLmpl implements NCRService{
             }
             ncrRequest.setStatusCode(StatusConstant.WAITING_APPROVAL_CODE);
             ncrRequest.setStatusName(StatusConstant.WAITING_APPROVAL_NAME);
+            ncrLogs.setStatusName(StatusConstant.SUBMIT);
         } else if (request.getAction().equals("Cancel")) {
             ncrRequest.setStatusCode(StatusConstant.CANCEL_CODE);
             ncrRequest.setStatusName(StatusConstant.CANCEL_NAME);
+            ncrLogs.setStatusName(StatusConstant.CANCEL_NAME);
         }
         ncrRequest.setStatusCode(ncrRequest.getStatusCode());
         ncrRequest.setStatusName(ncrRequest.getStatusName());
@@ -140,6 +155,8 @@ public class NCRLmpl implements NCRService{
         ncrRequest.setDetail(ncrRequestDetail);
 
         NCRRequest updated = ncrRequestRepository.save(ncrRequest);
+        ncrLogs.setNcrRequest(updated);
+        ncrLogsRepository.save(ncrLogs);
         return ncrRequestMapper.toResponse(updated);
     }
 

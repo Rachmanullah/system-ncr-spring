@@ -1,12 +1,15 @@
 package com.example.ncrsystem.ncrsystem.dto.ncrrequest;
 
+import com.example.ncrsystem.ncrsystem.dto.ncrlogs.NCRLogsResponse;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequestdetail.NCRDetailResponse;
+import com.example.ncrsystem.ncrsystem.model.NCRLogs;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -27,7 +30,8 @@ import java.util.Date;
         "statusCode",
         "statusName",
         "runningNumber",
-        "ncrDetail"
+        "ncrDetail",
+        "ncrLogs"
 })
 public class NCRRequestResponse {
     private BigInteger ncrId;
@@ -47,4 +51,5 @@ public class NCRRequestResponse {
     private String statusName;
     private Integer runningNumber;
     private NCRDetailResponse ncrDetail;
+    private List<NCRLogsResponse> ncrLogs;
 }
