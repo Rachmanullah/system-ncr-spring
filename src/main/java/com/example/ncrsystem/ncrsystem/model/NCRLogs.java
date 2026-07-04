@@ -31,7 +31,7 @@ public class NCRLogs {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
-    @Column(name = "STATUS_LOGS", length = 100)
+    @Column(name = "STATUS_LOGS", length = 150)
     private String statusName;
     @Column(name = "NOTES", length = 100)
     private String notes;

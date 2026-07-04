@@ -1,6 +1,7 @@
 package com.example.ncrsystem.ncrsystem.repository;
 
 import com.example.ncrsystem.ncrsystem.model.NCRMatrixApproval;
+import com.example.ncrsystem.ncrsystem.model.NCRMatrixDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -40,4 +41,5 @@ public interface NCRMatrixApprovalRepository extends JpaRepository<NCRMatrixAppr
             BigInteger departmentId,
             BigInteger deleted
     );
+
 }

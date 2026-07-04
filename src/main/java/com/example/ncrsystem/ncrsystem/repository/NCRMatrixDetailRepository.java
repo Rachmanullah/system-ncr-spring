@@ -22,4 +22,10 @@ public interface NCRMatrixDetailRepository extends JpaRepository<NCRMatrixDetail
 
     void deleteByNcrMatrixApproval(
             NCRMatrixApproval ncrMatrixApproval
-    );}
+    );
+    Optional<NCRMatrixDetail>
+    findFirstByNcrMatrixApproval_NcrMatrixIdAndDeletedOrderByOrderNumberAsc(
+            BigInteger matrixId,
+            BigInteger deleted
+    );
+}

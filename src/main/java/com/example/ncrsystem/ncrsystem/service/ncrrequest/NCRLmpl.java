@@ -9,6 +9,7 @@ import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestResponse;
 
 import com.example.ncrsystem.ncrsystem.model.*;
 import com.example.ncrsystem.ncrsystem.repository.*;
+import com.example.ncrsystem.ncrsystem.service.ncrFlowEngine.NCRFlowEngine;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +30,9 @@ public class NCRLmpl implements NCRService{
     private final DepartmentRepository departmentRepository;
     private final NCRRequestMapper ncrRequestMapper;
     private final GenerateNCRNumber generateNCRNumber;
-    private final NCRMatrixApprovalRepository matrixApprovalRepository;
-    private final NCRLogsMapper ncrLogsMapper;
     private final NCRLogsRepository ncrLogsRepository;
+    private final NCRFlowEngine ncrFlowEngine;
+
     @Override
     public List<NCRRequestResponse> findAll() {
         return ncrRequestRepository.findAllNcr()
@@ -47,12 +48,7 @@ public class NCRLmpl implements NCRService{
                 .orElseThrow(() -> new RuntimeException("Requestor not found"));
         Department department = departmentRepository.findById(request.getDepartmentId())
                 .orElseThrow(() -> new RuntimeException("Department not found"));
-        Optional<NCRMatrixApproval> existingMatrix =
-                matrixApprovalRepository
-                        .findByDepartmentDepartmentIdAndDeleted(
-                                request.getDepartmentId(),
-                                StatusConstant.ACTIVE
-                        );
+        boolean existingMatrix = ncrFlowEngine.checkMatrix(request.getDepartmentId());
         User implementationBy = null;
         NCRLogs ncrLogs = new NCRLogs();
         ncrLogs.setUser(requestor);
@@ -80,7 +76,7 @@ public class NCRLmpl implements NCRService{
             ncrRequest.setStatusName(StatusConstant.DRAFT_NAME);
             ncrLogs.setStatusName(StatusConstant.DRAFT_NAME);
         } else if (request.getAction().equals("Submit")){
-            if (existingMatrix.isEmpty()){
+            if (!existingMatrix){
                 throw new RuntimeException(
                         "Approval Matrix not exists for this department"
                 );
@@ -94,6 +90,11 @@ public class NCRLmpl implements NCRService{
         NCRRequest saved = ncrRequestRepository.save(ncrRequest);
         ncrLogs.setNcrRequest(saved);
         ncrLogsRepository.save(ncrLogs);
+
+        if (request.getAction().equals("Submit")){
+            ncrFlowEngine.startFlow(saved);
+        }
+
         return ncrRequestMapper.toResponse(saved);
     }
 
@@ -110,12 +111,8 @@ public class NCRLmpl implements NCRService{
                 .orElseThrow(() -> new RuntimeException("Requestor not found"));
         Department department = departmentRepository.findById(request.getDepartmentId())
                 .orElseThrow(() -> new RuntimeException("Department not found"));
-        Optional<NCRMatrixApproval> existingMatrix =
-                matrixApprovalRepository
-                        .findByDepartmentDepartmentIdAndDeleted(
-                                request.getDepartmentId(),
-                                StatusConstant.ACTIVE
-                        );
+        boolean existingMatrix = ncrFlowEngine.checkMatrix(request.getDepartmentId());
+
         NCRLogs ncrLogs = new NCRLogs();
         ncrLogs.setUser(requestor);
         ncrLogs.setOrderNumber(0);
@@ -131,7 +128,7 @@ public class NCRLmpl implements NCRService{
         ncrRequest.setImplementationBy(implementationBy);
         ncrRequest.setNcrImplementationDate(request.getNcrImplementationDate());
         if (request.getAction().equals("Submit")){
-            if (existingMatrix.isEmpty()){
+            if (!existingMatrix){
                 throw new RuntimeException(
                         "Approval Matrix not exists for this department"
                 );
@@ -157,6 +154,11 @@ public class NCRLmpl implements NCRService{
         NCRRequest updated = ncrRequestRepository.save(ncrRequest);
         ncrLogs.setNcrRequest(updated);
         ncrLogsRepository.save(ncrLogs);
+
+        if (request.getAction().equals("Submit")){
+            ncrFlowEngine.startFlow(updated);
+        }
+
         return ncrRequestMapper.toResponse(updated);
     }
 

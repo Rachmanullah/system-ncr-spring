@@ -59,7 +59,7 @@ public class NCRRequest {
     private String ncrCategory;
     @Column(name = "STATUS_CODE", length = 10)
     private String statusCode;
-    @Column(name = "STATUS_NAME", length = 100)
+    @Column(name = "STATUS_NAME", length = 150)
     private String statusName;
     @Column(name = "RUNNING_NUMBER")
     private Integer runningNumber;
