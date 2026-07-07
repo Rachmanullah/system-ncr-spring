@@ -28,4 +28,24 @@ public interface NCRMatrixDetailRepository extends JpaRepository<NCRMatrixDetail
             BigInteger matrixId,
             BigInteger deleted
     );
+
+    Optional<NCRMatrixDetail>
+    findFirstByNcrMatrixApproval_NcrMatrixIdAndOrderNumberGreaterThanAndDeletedOrderByOrderNumberAsc(
+            BigInteger matrixId,
+            Integer currentOrderNumber,
+            BigInteger deleted
+    );
+
+    Optional<NCRMatrixDetail>
+    findFirstByNcrMatrixApproval_NcrMatrixIdAndOrderNumberLessThanAndDeletedOrderByOrderNumberDesc(
+            BigInteger matrixId,
+            Integer currentOrderNumber,
+            BigInteger deleted
+    );
+
+    Optional<NCRMatrixDetail> findFirstByNcrMatrixApproval_NcrMatrixIdAndOrderNumberAndDeleted(
+            BigInteger ncrMatrixId,
+            BigInteger orderNumber,
+            BigInteger deleted
+    );
 }

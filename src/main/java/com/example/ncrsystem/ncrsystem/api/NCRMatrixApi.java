@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api/master/matrix")
+@RequestMapping("/api/ncr/matrix")
 public interface NCRMatrixApi {
     @GetMapping
     ResponseEntity<?> findAll();

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface NCRRequestRepository extends JpaRepository<NCRRequest, BigInteger> {
@@ -26,4 +27,14 @@ public interface NCRRequestRepository extends JpaRepository<NCRRequest, BigInteg
         WHERE u.deleted = 0
     """)
     List<NCRRequest> findAllNcr();
+
+    @Query("""
+          SELECT u
+          FROM NCRRequest u
+          WHERE u.deleted = 0
+          AND u.runningNumber > 0
+    """)
+    List<NCRRequest> findAllNcrNeedApprove();
+
+    Optional<NCRRequest> findByNcrNumber(String ncrNumber);
 }

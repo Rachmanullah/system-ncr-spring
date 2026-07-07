@@ -14,6 +14,7 @@ import java.util.Date;
 @JsonPropertyOrder({
         "ncrLogId",
         "orderNumber",
+        "userId",
         "user",
         "statusName",
         "notes",
@@ -21,6 +22,7 @@ import java.util.Date;
 })
 public class NCRLogsResponse {
     private BigInteger ncrLogId;
+    private BigInteger userId;
     private String username;
     private String userPosition;
     private String statusName;

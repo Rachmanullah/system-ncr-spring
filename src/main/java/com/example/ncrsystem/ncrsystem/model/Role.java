@@ -50,6 +50,12 @@ public class Role {
             orphanRemoval = true
     )
     private List<RoleMenu> roleMenus;
+    @OneToMany(
+            mappedBy = "role",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<RolePermission> rolePermissions;
     @PrePersist
     @PreUpdate
     public void prePersist() {

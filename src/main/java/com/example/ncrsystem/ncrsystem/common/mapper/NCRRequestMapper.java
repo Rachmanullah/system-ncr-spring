@@ -115,6 +115,7 @@ public class NCRRequestMapper {
                                 .statusName(log.getStatusName())
                                 .statusName(log.getStatusName())
                                 .notes(log.getNotes())
+                                .userId(log.getUser().getUserId())
                                 .username(log.getUser().getUsername())
                                 .userPosition(log.getUser().getPosition())
                                 .date(log.getCreated())

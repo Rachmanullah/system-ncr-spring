@@ -55,7 +55,7 @@ public class MenuLmpl implements MenuService{
     public MenuResponse update(BigInteger menuId, MenuRequest menuRequest) {
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new RuntimeException("Menu Not Found"));
-        if(menuRequest.getMenuParentId() != null){
+        if(menuRequest.getMenuParentId() != null && menuRequest.getMenuParentId() != 0){
             menuRepository.findById(BigInteger.valueOf(menuRequest.getMenuParentId()))
                     .orElseThrow(()-> new RuntimeException("Parent Menu not found"));
         }

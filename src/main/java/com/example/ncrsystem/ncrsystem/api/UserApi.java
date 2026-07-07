@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api/master/users")
+@RequestMapping("/api/system/users")
 public interface UserApi {
     @GetMapping
     ResponseEntity<?> findAll();

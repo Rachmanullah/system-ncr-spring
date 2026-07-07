@@ -30,6 +30,8 @@ import java.util.List;
         "statusCode",
         "statusName",
         "runningNumber",
+        "approver",
+        "approverNotes",
         "ncrDetail",
         "ncrLogs"
 })
@@ -50,6 +52,8 @@ public class NCRRequestResponse {
     private String statusCode;
     private String statusName;
     private Integer runningNumber;
+    private BigInteger approver;
+    private String approverNotes;
     private NCRDetailResponse ncrDetail;
     private List<NCRLogsResponse> ncrLogs;
 }

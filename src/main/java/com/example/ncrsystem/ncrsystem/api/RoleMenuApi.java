@@ -4,7 +4,7 @@ import com.example.ncrsystem.ncrsystem.dto.rolemenu.RoleMenuRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api/master/settings/rolemenu")
+@RequestMapping("/api/settings/rolemenu")
 public interface RoleMenuApi {
     @GetMapping
     ResponseEntity<?> findAll();

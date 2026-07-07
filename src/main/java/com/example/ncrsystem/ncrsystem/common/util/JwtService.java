@@ -8,10 +8,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigInteger;
+import java.util.*;
 
 
 @Service
@@ -35,6 +33,15 @@ public class JwtService {
         if (user.getRole() != null) {
             claims.put("roleId", user.getRole().getRoleId());
             claims.put("roleName", user.getRole().getRoleName());
+            List<String> permission = user.getRole().getRolePermissions() == null
+                    ? List.of()
+                    : user.getRole().getRolePermissions().stream()
+                    .filter(rp -> rp.getStatus() != null && rp.getStatus().equals(BigInteger.ZERO))
+                    .filter(rp -> rp.getDeleted() == null || rp.getDeleted().equals(BigInteger.ZERO))
+                    .map(rp -> rp.getPermissionAction().getPermissionCode())
+                    .toList();
+
+            claims.put("rolePermission", permission);
         }
 
         if (user.getDepartment() != null) {
@@ -49,7 +56,7 @@ public class JwtService {
                 .subject(user.getUsername())
                 .issuedAt(new Date())
                 .expiration(
-                        new Date(System.currentTimeMillis() + 86400000)
+                        new Date(System.currentTimeMillis() + 3600000)
                 )
                 .signWith(getSigningKey())
                 .compact();

@@ -4,7 +4,7 @@ import com.example.ncrsystem.ncrsystem.dto.role.RoleRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api/master/roles")
+@RequestMapping("/api/system/roles")
 public interface RoleApi {
     @GetMapping
     ResponseEntity<?> findAll();

@@ -1,7 +1,6 @@
 package com.example.ncrsystem.ncrsystem.service.ncrrequest;
 
 import com.example.ncrsystem.ncrsystem.common.constant.StatusConstant;
-import com.example.ncrsystem.ncrsystem.common.mapper.NCRLogsMapper;
 import com.example.ncrsystem.ncrsystem.common.mapper.NCRRequestMapper;
 import com.example.ncrsystem.ncrsystem.common.util.GenerateNCRNumber;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestDto;
@@ -9,7 +8,7 @@ import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestResponse;
 
 import com.example.ncrsystem.ncrsystem.model.*;
 import com.example.ncrsystem.ncrsystem.repository.*;
-import com.example.ncrsystem.ncrsystem.service.ncrFlowEngine.NCRFlowEngine;
+import com.example.ncrsystem.ncrsystem.service.ncrFlowEngine.NCRFlowEngineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +17,6 @@ import org.springframework.util.StringUtils;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +29,7 @@ public class NCRLmpl implements NCRService{
     private final NCRRequestMapper ncrRequestMapper;
     private final GenerateNCRNumber generateNCRNumber;
     private final NCRLogsRepository ncrLogsRepository;
-    private final NCRFlowEngine ncrFlowEngine;
+    private final NCRFlowEngineService ncrFlowEngineService;
 
     @Override
     public List<NCRRequestResponse> findAll() {
@@ -48,7 +46,7 @@ public class NCRLmpl implements NCRService{
                 .orElseThrow(() -> new RuntimeException("Requestor not found"));
         Department department = departmentRepository.findById(request.getDepartmentId())
                 .orElseThrow(() -> new RuntimeException("Department not found"));
-        boolean existingMatrix = ncrFlowEngine.checkMatrix(request.getDepartmentId());
+        boolean existingMatrix = ncrFlowEngineService.checkMatrix(request.getDepartmentId());
         User implementationBy = null;
         NCRLogs ncrLogs = new NCRLogs();
         ncrLogs.setUser(requestor);
@@ -57,7 +55,6 @@ public class NCRLmpl implements NCRService{
             implementationBy = userRepository.findById(request.getImplementationId())
                     .orElseThrow(() -> new RuntimeException("Implementation user not found"));
         }
-        System.out.println(request.toString());
         NCRRequest ncrRequest = ncrRequestMapper.toEntity(
                 request,
                 requestor,
@@ -92,7 +89,7 @@ public class NCRLmpl implements NCRService{
         ncrLogsRepository.save(ncrLogs);
 
         if (request.getAction().equals("Submit")){
-            ncrFlowEngine.startFlow(saved);
+            ncrFlowEngineService.startFlow(saved);
         }
 
         return ncrRequestMapper.toResponse(saved);
@@ -101,7 +98,6 @@ public class NCRLmpl implements NCRService{
     @Override
     @Transactional
     public NCRRequestResponse update(BigInteger ncrId, NCRRequestDto request) {
-        System.out.println("header : "+ request.toString());
         User implementationBy = null;
         NCRRequest ncrRequest = ncrRequestRepository.findById(ncrId).orElseThrow(() -> new RuntimeException("NCR Not Found"));
         NCRRequestDetail ncrRequestDetail = ncrRequestDetailRepository
@@ -111,7 +107,7 @@ public class NCRLmpl implements NCRService{
                 .orElseThrow(() -> new RuntimeException("Requestor not found"));
         Department department = departmentRepository.findById(request.getDepartmentId())
                 .orElseThrow(() -> new RuntimeException("Department not found"));
-        boolean existingMatrix = ncrFlowEngine.checkMatrix(request.getDepartmentId());
+        boolean existingMatrix = ncrFlowEngineService.checkMatrix(request.getDepartmentId());
 
         NCRLogs ncrLogs = new NCRLogs();
         ncrLogs.setUser(requestor);
@@ -156,7 +152,7 @@ public class NCRLmpl implements NCRService{
         ncrLogsRepository.save(ncrLogs);
 
         if (request.getAction().equals("Submit")){
-            ncrFlowEngine.startFlow(updated);
+            ncrFlowEngineService.startFlow(updated);
         }
 
         return ncrRequestMapper.toResponse(updated);
