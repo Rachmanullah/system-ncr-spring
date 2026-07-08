@@ -28,5 +28,7 @@ public class NCRMatrixRequest {
         @NotNull(message = "Order Number Required")
         @Min(1)
         private Integer orderNumber;
+        private Integer approveToOrderNumber;
+        private Integer rejectToOrderNumber;
     }
 }

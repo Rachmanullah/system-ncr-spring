@@ -31,12 +31,16 @@ public class NCRMatrixResponse {
             "approverId",
             "approverName",
             "approverPosition",
-            "orderNumber"
+            "orderNumber",
+            "approveToOrderNumber",
+            "rejectToOrderNumber"
     })
     public static class ApproverResponse {
         private BigInteger approverId;
         private String approverName;
         private String approverPosition;
         private Integer orderNumber;
+        private Integer approveToOrderNumber;
+        private Integer rejectToOrderNumber;
     }
 }

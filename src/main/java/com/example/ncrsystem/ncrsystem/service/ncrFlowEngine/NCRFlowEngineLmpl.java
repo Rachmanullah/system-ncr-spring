@@ -71,12 +71,38 @@ public class NCRFlowEngineLmpl implements NCRFlowEngineService {
                                 ncrRequest.getDepartment().getDepartmentId(),
                                 StatusConstant.ACTIVE);
 
-        Optional<NCRMatrixDetail> nextDetail = ncrMatrixDetailRepository
-                .findFirstByNcrMatrixApproval_NcrMatrixIdAndOrderNumberGreaterThanAndDeletedOrderByOrderNumberAsc(
+        Optional<NCRMatrixDetail> currentDetail = ncrMatrixDetailRepository
+                .findFirstByNcrMatrixApproval_NcrMatrixIdAndOrderNumberAndDeleted(
                         matrixApproval.get().getNcrMatrixId(),
-                        ncrRequest.getRunningNumber(),
-                        StatusConstant.ACTIVE
-                );
+                        BigInteger.valueOf(ncrRequest.getRunningNumber()),
+                        StatusConstant.ACTIVE);
+
+        Optional<NCRMatrixDetail> nextDetail;
+
+        Integer approveTarget = currentDetail.get().getApproveToOrderNumber();
+        if (approveTarget == null) {
+            nextDetail = ncrMatrixDetailRepository
+                    .findFirstByNcrMatrixApproval_NcrMatrixIdAndOrderNumberGreaterThanAndDeletedOrderByOrderNumberAsc(
+                            matrixApproval.get().getNcrMatrixId(),
+                            ncrRequest.getRunningNumber(),
+                            StatusConstant.ACTIVE
+                    );
+        } else {
+            nextDetail = ncrMatrixDetailRepository
+                    .findFirstByNcrMatrixApproval_NcrMatrixIdAndOrderNumberAndDeleted(
+                            matrixApproval.get().getNcrMatrixId(),
+                            BigInteger.valueOf(approveTarget),
+                            StatusConstant.ACTIVE
+                    );
+            if (nextDetail.isEmpty()) {
+                nextDetail = ncrMatrixDetailRepository
+                        .findFirstByNcrMatrixApproval_NcrMatrixIdAndOrderNumberGreaterThanAndDeletedOrderByOrderNumberAsc(
+                                matrixApproval.get().getNcrMatrixId(),
+                                ncrRequest.getRunningNumber(),
+                                StatusConstant.ACTIVE
+                        );
+            }
+        }
         if (nextDetail.isPresent()) {
             NCRMatrixDetail detail = nextDetail.get();
             User nextApprover = detail.getApprover();

@@ -15,7 +15,6 @@ import com.example.ncrsystem.ncrsystem.repository.NCRMatrixDetailRepository;
 import com.example.ncrsystem.ncrsystem.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -82,17 +81,12 @@ public class NCRMatrixLmpl implements NCRMatrixService{
             );
         }
 
-//        if (!StringUtils.hasText(
-//                request.getNcrMatrixCode()
-//        )) {
-
-            request.setNcrMatrixCode(
-                    generateNCRMatrixCode.generate(
-                            LocalDate.now(),
-                            department.getDepartmentCode()
-                    )
-            );
-//        }
+        request.setNcrMatrixCode(
+            generateNCRMatrixCode.generate(
+                LocalDate.now(),
+                department.getDepartmentCode()
+            )
+        );
 
         NCRMatrixApproval header =
                 matrixMapper.toHeader(

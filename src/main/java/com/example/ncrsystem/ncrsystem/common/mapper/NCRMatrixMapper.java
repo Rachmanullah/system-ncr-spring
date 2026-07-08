@@ -44,6 +44,8 @@ public class NCRMatrixMapper {
                                 .orderNumber(
                                         item.getOrderNumber()
                                 )
+                                .approveToOrderNumber(item.getApproveToOrderNumber())
+                                .rejectToOrderNumber(item.getRejectToOrderNumber())
                                 .build()
                 )
                 .toList();
@@ -115,7 +117,8 @@ public class NCRMatrixMapper {
                                 a.setOrderNumber(
                                         detail.getOrderNumber()
                                 );
-
+                                a.setApproveToOrderNumber(detail.getApproveToOrderNumber());
+                                a.setRejectToOrderNumber(detail.getRejectToOrderNumber());
                                 return a;
                             })
                             .toList();

@@ -33,6 +33,8 @@ public class NCRMatrixDetail {
     private User approver;
     @Column(name = "ORDER_NUMBER")
     private Integer orderNumber;
+    @Column(name = "APPROVE_TO_ORDER_NUMBER")
+    private Integer approveToOrderNumber;
     @Column(name = "REJECT_TO_ORDER_NUMBER")
     private Integer rejectToOrderNumber;
     @Column(name="DELETED")
