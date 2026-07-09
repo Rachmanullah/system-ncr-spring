@@ -1,6 +1,8 @@
 package com.example.ncrsystem.ncrsystem.dto.ncrrequest;
 
+import com.example.ncrsystem.ncrsystem.dto.ncrattachment.NCRAttachmentRequest;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequestdetail.NCRDetailRequestDto;
+import com.example.ncrsystem.ncrsystem.model.NCRAttachment;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -12,6 +14,7 @@ import org.hibernate.validator.constraints.Length;
 
 import java.math.BigInteger;
 import java.sql.Date;
+import java.util.List;
 
 @Data
 public class NCRRequestDto {
@@ -54,4 +57,5 @@ public class NCRRequestDto {
     @Valid
     @NotNull(message = "Detail Required")
     private NCRDetailRequestDto detail;
+    private List<NCRAttachmentRequest> attachment;
 }

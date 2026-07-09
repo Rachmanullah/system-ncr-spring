@@ -34,6 +34,12 @@ public class Menu {
     private String menuRoute;
     @Column(name = "MENU_PARENT_ID")
     private Integer menuParentId;
+//    @Column(name = "MENU_COMPONENT")
+//    private String menuComponent;
+//    @Column(name = "MENU_RESOLVE")
+//    private String menuResolve;
+//    @Column(name = "MENU_GUARD")
+//    private String menuGuard;
     @Column(name="DELETED")
     private BigInteger deleted;
     @CreationTimestamp

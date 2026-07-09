@@ -3,12 +3,14 @@ package com.example.ncrsystem.ncrsystem.service.ncrrequest;
 import com.example.ncrsystem.ncrsystem.common.constant.StatusConstant;
 import com.example.ncrsystem.ncrsystem.common.mapper.NCRRequestMapper;
 import com.example.ncrsystem.ncrsystem.common.util.GenerateNCRNumber;
+import com.example.ncrsystem.ncrsystem.dto.ncrattachment.NCRAttachmentRequest;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestDto;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequest.NCRRequestResponse;
 
 import com.example.ncrsystem.ncrsystem.model.*;
 import com.example.ncrsystem.ncrsystem.repository.*;
 import com.example.ncrsystem.ncrsystem.service.ncrFlowEngine.NCRFlowEngineService;
+import com.example.ncrsystem.ncrsystem.service.ncrattachment.NCRAttachmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,12 +32,21 @@ public class NCRLmpl implements NCRService{
     private final GenerateNCRNumber generateNCRNumber;
     private final NCRLogsRepository ncrLogsRepository;
     private final NCRFlowEngineService ncrFlowEngineService;
+    private final NCRAttachmentService ncrAttachmentService;
 
     @Override
     public List<NCRRequestResponse> findAll() {
+//        return ncrRequestRepository.findAllNcr()
+//                .stream()
+//                .map(ncrRequestMapper::toResponse)
+//                .toList();
         return ncrRequestRepository.findAllNcr()
                 .stream()
-                .map(ncrRequestMapper::toResponse)
+                .map(entity -> {
+                    NCRRequestResponse response = ncrRequestMapper.toResponse(entity);
+                    response.setNcrAttachment(ncrAttachmentService.findByNcrId(entity.getNcrId()));
+                    return response;
+                })
                 .toList();
     }
 
@@ -88,11 +99,19 @@ public class NCRLmpl implements NCRService{
         ncrLogs.setNcrRequest(saved);
         ncrLogsRepository.save(ncrLogs);
 
+        if (request.getAttachment() != null && !request.getAttachment().isEmpty()) {
+            List<BigInteger> attachmentIds = request.getAttachment().stream()
+                    .map(NCRAttachmentRequest::getNcrAttachmentId)
+                    .toList();
+            ncrAttachmentService.linkAttachmentsToNcr(attachmentIds, saved);
+        }
+
         if (request.getAction().equals("Submit")){
             ncrFlowEngineService.startFlow(saved);
         }
-
-        return ncrRequestMapper.toResponse(saved);
+        NCRRequestResponse response = ncrRequestMapper.toResponse(saved);
+        response.setNcrAttachment(ncrAttachmentService.findByNcrId(saved.getNcrId()));
+        return response;
     }
 
     @Override
@@ -151,11 +170,20 @@ public class NCRLmpl implements NCRService{
         ncrLogs.setNcrRequest(updated);
         ncrLogsRepository.save(ncrLogs);
 
+        if (request.getAttachment() != null && !request.getAttachment().isEmpty()) {
+            List<BigInteger> attachmentIds = request.getAttachment().stream()
+                    .map(NCRAttachmentRequest::getNcrAttachmentId)
+                    .toList();
+            ncrAttachmentService.linkAttachmentsToNcr(attachmentIds, updated);
+        }
+
         if (request.getAction().equals("Submit")){
             ncrFlowEngineService.startFlow(updated);
         }
 
-        return ncrRequestMapper.toResponse(updated);
+        NCRRequestResponse response = ncrRequestMapper.toResponse(updated);
+        response.setNcrAttachment(ncrAttachmentService.findByNcrId(updated.getNcrId()));
+        return response;
     }
 
     @Override

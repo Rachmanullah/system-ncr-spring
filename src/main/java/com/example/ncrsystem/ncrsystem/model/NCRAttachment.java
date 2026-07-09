@@ -25,17 +25,17 @@ public class NCRAttachment {
     )
     @Column(name = "NCR_ATTACHMENT_ID")
     private BigInteger ncrAttachmentId;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-            name = "NCR_ID",
-            nullable = true,
-            unique = true
-    )
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "NCR_ID", nullable = true)
     private NCRRequest ncrRequest;
-    @Column(name = "FILE_NAME", length = 150)
+    @Column(name = "FILE_NAME", length = 255)
     private String fileName;
     @Column(name = "FILE_PATH", length = 255)
     private String filePath;
+    @Column(name = "ORIGINAL_FILE_NAME", length = 255)
+    private String originalFileName;
+    @Column(name = "FILE_SIZE")
+    private Long fileSize;
     @Column(name="DELETED")
     private BigInteger deleted;
     @CreationTimestamp

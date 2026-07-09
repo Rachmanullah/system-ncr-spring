@@ -1,5 +1,6 @@
 package com.example.ncrsystem.ncrsystem.dto.ncrrequest;
 
+import com.example.ncrsystem.ncrsystem.dto.ncrattachment.NCRAttachmentResponse;
 import com.example.ncrsystem.ncrsystem.dto.ncrlogs.NCRLogsResponse;
 import com.example.ncrsystem.ncrsystem.dto.ncrrequestdetail.NCRDetailResponse;
 import com.example.ncrsystem.ncrsystem.model.NCRLogs;
@@ -33,7 +34,8 @@ import java.util.List;
         "approver",
         "approverNotes",
         "ncrDetail",
-        "ncrLogs"
+        "ncrLogs",
+        "ncrAttachment"
 })
 public class NCRRequestResponse {
     private BigInteger ncrId;
@@ -56,4 +58,5 @@ public class NCRRequestResponse {
     private String approverNotes;
     private NCRDetailResponse ncrDetail;
     private List<NCRLogsResponse> ncrLogs;
+    private List<NCRAttachmentResponse> ncrAttachment;
 }
